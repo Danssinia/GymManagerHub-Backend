@@ -1,26 +1,36 @@
 //loginPage, loggedIn 
 //import bcrypt
-const bcrypt = require("bcrypt");
+import { Request, Response } from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const saltRounds = 10;
-const jwt = require("jsonwebtoken");
 const maxAge = 3 * 24 * 60 * 60;
+
+interface JwtUser {
+    email: String,
+    password: String
+}
 //function to create jwt token
-const createToken = (user) => {
-    return jwt.sign({ user }, process.env.JWT_SECRET, {
+const createToken = (user: JwtUser) => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        throw new Error("Secret not defined in the environment variables")
+    }
+    return jwt.sign({ user }, secret, {
         expiresIn: maxAge
     })
 }
 
-const loginPage = (req: Request, res: Response) => {
+export const loginPage = (req: Request, res: Response) => {
     res.send("Login")
 }
 
-const loggedIn = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+export const loggedIn = async (req: Request, res: Response): Promise<void> => {
+    const { email, password } = req.body as { email: string, password: string };
     try {
         const salt = await bcrypt.genSalt(saltRounds)
         const hashedPassword = await bcrypt.hash(password, salt);
-        const user = {
+        const user: JwtUser = {
             email: email,
             password: hashedPassword
         }
@@ -39,7 +49,3 @@ const loggedIn = async (req: Request, res: Response) => {
     }
 }
 
-module.exports = {
-    loginPage,
-    loggedIn
-}

@@ -1,16 +1,22 @@
 import "reflect-metadata"
-const express = require("express")
-const userRoutes = require('./routes/userRoutes')
-const cookie = require("cookie-parser")
+import express from "express";
+import userRoutes from './routes/userRoutes'
+import cookieParser from "cookie-parser"
+import { pool } from './config/db'
+
+
 //creating the express app
 const app = express()
-const pool = require('./config/db');
+
 app.use(express.json());
+app.use(cookieParser())
+
+//Routes
 app.use('/api/v1/users', userRoutes)
-app.use(cookie())
+
 const PORT = 3000;
 //checking the connection
-const testConnection = async () => {
+const testConnection = async (): Promise<void> => {
     try {
         await pool.connect();
         console.log("Database Connected Successfully")

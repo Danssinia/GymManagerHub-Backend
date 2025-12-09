@@ -6,5 +6,4 @@ router.get('/login', (req: Request, res: Response) => loginPage(req, res))
 
 router.post('/login', (req: Request, res: Response) => loggedIn(req, res))
 
-
-module.exports = router
+export default router
