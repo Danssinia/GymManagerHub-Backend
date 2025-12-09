@@ -1,0 +1,8 @@
+# Ignore Node.js dependencies (never commit this folder)
+node_modules/
+
+# Ignore environment variables (API keys, secrets...)
+.env
+
+dist/
+build/
