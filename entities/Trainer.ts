@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { IsEmail, Length } from "class-validator";
-
 @Entity()
 export class Trainer {
     @PrimaryGeneratedColumn()

@@ -1,7 +1,8 @@
 import "reflect-metadata"
-import express, {Response,Request} from "express";
+import express, { Response, Request } from "express";
 import userRoutes from './routes/userRoutes'
 import trainerRoutes from './routes/trainerRoutes'
+import receptionRoutes from './routes/receptionRoutes'
 import cookieParser from "cookie-parser"
 import { AppDataSource } from "./config/data-source";
 
@@ -13,11 +14,9 @@ app.use(express.json());
 app.use(cookieParser())
 
 //Routes
-app.get('/',(req:Request,res:Response)=>{
-    res.json({message:"Helllo there"})
-})
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/trainers', trainerRoutes)
+app.use('/api/v1/receptions', receptionRoutes)
 
 const PORT = 3000;
 AppDataSource.initialize()
@@ -31,4 +30,3 @@ AppDataSource.initialize()
         console.error("Error during data source initialization", err)
     })
 
-    

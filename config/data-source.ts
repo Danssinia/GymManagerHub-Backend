@@ -1,7 +1,9 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "../entities/User"
+import { Trainer } from "../entities/Trainer"
 import * as dotenv from "dotenv"
+import { Reception } from "../entities/Reception"
 dotenv.config();
 function getEnvVar(key: string): string {
     const value = process.env[key];
@@ -17,5 +19,9 @@ export const AppDataSource = new DataSource({
     database: getEnvVar("DB_NAME"),
     synchronize: true,
     logging: false,
-    entities: [User]
+    entities: [
+        User,
+        Trainer,
+        Reception
+    ]
 })
