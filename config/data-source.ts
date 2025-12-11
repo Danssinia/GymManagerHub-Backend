@@ -4,6 +4,9 @@ import { User } from "../entities/User"
 import { Trainer } from "../entities/Trainer"
 import * as dotenv from "dotenv"
 import { Reception } from "../entities/Reception"
+import { Role } from "../entities/Role.entity"
+import { Staff } from "../entities/Staff.entity"
+import { Member } from "../entities/Member.entity"
 dotenv.config();
 function getEnvVar(key: string): string {
     const value = process.env[key];
@@ -22,6 +25,9 @@ export const AppDataSource = new DataSource({
     entities: [
         User,
         Trainer,
-        Reception
+        Reception,
+        Role,
+        Staff,
+        Member
     ]
 })
