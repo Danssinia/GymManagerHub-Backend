@@ -59,7 +59,7 @@ export class User {
     updatedAt!: Date
 
     //Relation between User and Staff
-    @OneToOne(() => Staff, staff => staff.user , { nullable: true })
+    @OneToOne(() => Staff, staff => staff.user, { nullable: true })
     staff!: Staff
 
     //Relation between User and Member
