@@ -63,7 +63,7 @@ export class User {
     staff!: Staff
 
     //Relation between User and Member
-    // @OneToOne(() => Member, member => member.user, { nullable: true })
-    // member!: Member
+    @OneToOne(() => Member, member => member.user, { nullable: true })
+    member!: Member
 
 }
