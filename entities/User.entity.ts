@@ -7,10 +7,10 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     user_id!: string
 
-    @Column({ length: 100 })
+    @Column({ length: 100 ,name:'first_name' })
     first_name!: string
 
-    @Column({ length: 100 })
+    @Column({ length: 100, name:'last_name' })
     last_name!: string
 
     @Column({ unique: true, length: 255 })
@@ -26,7 +26,7 @@ export class User {
     phone!: string
 
     @Column({ type: Date, nullable: true })
-    date_of_birth!: Date
+    date_of_birth!: string
 
     @Column({ type: 'text', nullable: true })
     address!: string
