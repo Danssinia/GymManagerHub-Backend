@@ -9,7 +9,7 @@ export class UserService {
     private userRepository = AppDataSource.getRepository(User);
     private roleRepository = AppDataSource.getRepository(Role);
     
-    async createUser (createUserDto:CreateUserDto): Promise<User>[] {
+    async createUser (createUserDto:CreateUserDto): Promise<void> {
 
         //check for existing user
         const exstingUser = await this.userRepository.findOne({
@@ -55,7 +55,8 @@ export class UserService {
             email:createUserDto.email,
             username:createUserDto.username,
             password:hashed_password,
-            phone:createUserDto.phone || null,
+            phone:createUserDto.phone??"",
+            // phone:createUserDto.phone || null,
             date_of_birth:createUserDto.date_of_birth ? new Date(createUserDto.date_of_birth):null,
             address:createUserDto.address || null,
             profile_picture:createUserDto.profile_picture || null,
