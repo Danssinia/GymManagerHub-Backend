@@ -18,36 +18,36 @@ export class CreateUserDto {
 
     @IsString()
     @MinLength(3)
-    last_name!:string
+    last_name!: string
 
     @IsEmail()
-    email!:string
+    email!: string
 
     @IsString()
     @MinLength(3)
-    username!:string
+    username!: string
 
     @IsString()
     @MinLength(8)
-    password!:string
+    password!: string
 
     @IsString()
     @IsOptional()
-    phone?:string
+    phone?: string
 
     @IsDateString()
     @IsOptional()
-    date_of_birth?:string
+    date_of_birth?: string
 
     @IsString()
     @IsOptional()
-    address?:string
+    address?: string
 
-    @IsString()
-    @IsOptional()
-    @MinLength(500)
-    profile_picture?:string
-    
+    // @IsString()
+    // @IsOptional()
+    // @MinLength(500)
+    // profile_picture?:string
+
     @IsUUID()
-    role_id!:string
+    role_id!: string
 }

@@ -6,7 +6,16 @@ export class Role {
     @PrimaryGeneratedColumn('uuid')
     role_id!: string
 
-    @Column({ unique: true, length: 50 })
+    // @Column({
+    //     type: 'enum',
+    //     enum: [
+    //         'Admin',
+    //         'Staff',
+    //         'Member'
+    //     ],
+    //     unique: true,
+    // })
+    @Column({ unique: true })
     role_name!: string
 
     @CreateDateColumn()

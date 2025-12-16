@@ -1,9 +1,7 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { User } from "../entities/User"
-import { Trainer } from "../entities/Trainer"
 import * as dotenv from "dotenv"
-import { Reception } from "../entities/Reception"
+import { User } from "../entities/User.entity"
 import { Role } from "../entities/Role.entity"
 import { Staff } from "../entities/Staff.entity"
 import { Member } from "../entities/Member.entity"
@@ -24,8 +22,6 @@ export const AppDataSource = new DataSource({
     logging: false,
     entities: [
         User,
-        Trainer,
-        Reception,
         Role,
         Staff,
         Member
