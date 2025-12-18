@@ -78,4 +78,42 @@ export class UserService {
             throw new Error('User Creation Failed')
         }
     }
+
+    //function to get all registered users
+     async getAllUsers():Promise<Omit<User, 'password'>[]> {
+
+        try {
+            const users= await this.userRepository.find({
+            relations:['role'],
+            order:{createdAt:'DESC'}
+        })
+        //users.forEach(user=>delete (user as any).password)
+        return users.map(({ password, ...userWithoutPassword }) => userWithoutPassword)
+        } catch (error) {
+            console.error("Error Fetching the users")
+            throw new Error('Fetching users failed')
+        }
+  
+        
+    }
+
+    //function to get a single user
+    async getUserById (user_id:string):Promise<User | null>{
+        
+        const user= await this.userRepository.findOne({
+            relations:['role'],
+            where:{user_id}
+        })
+        if(!user){
+            throw new Error('User not Found')
+        }
+        //removing the password
+        delete (user as any).password
+        return user
+    }
+
+    //function to update a user
+    async updateUser(user_id:string,updateUserDto:UpdateUserDto){
+        
+    }
 }

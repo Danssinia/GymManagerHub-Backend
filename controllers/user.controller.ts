@@ -5,7 +5,11 @@ import { UpdateUserDto } from '../dtos/user/updateUserDto.dto'
 import { isInstance, validate } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 
+interface userData{
+        id:string
+    }
 export class UserController {
+    
     private userSerivce!: UserService;
 
     constructor() {
@@ -62,6 +66,80 @@ export class UserController {
                 error: error instanceof Error ? error.message : "Unknown Error"
             })
         }
+    }
+
+    //method to fetch all users
+    fetchUsers = async (req:Request,res:Response) =>{
+        try {
+            //calling the service
+            const allusers=await this.userSerivce.getAllUsers()
+            return res.status(200).json({
+                message:"Users fetched successfully",
+                data:allusers
+            })
+        } catch (error) {
+            console.error("Error Fetching Users",error)
+            //i will manage the errors here later
+        }
+    }
+
+    //method to fetch a user by id
+    getUserById = async (req:Request,res:Response) =>{
+        const {id} =req.params ;
+        try {
+            const user= await this.userSerivce.getUserById(id??"")
+            return res.status(200).json({
+                success:true,
+                message:"User fetched successfully",
+                data:user,
+            })
+        } catch (error) {
+            console.error("Error fetching user")
+            return res.status(500).json({
+                success:false,
+                message:"Failed to fetch user"
+            })
+        }
+        
+    }
+
+    //method to update a user
+    async updateUser(req:Request,res:Response){
+        const {id}=req.params
+        //converting plainJSON to DTO class
+        const updateUserDto=plainToClass(UpdateUserDto,req.body)
+
+        //validating the DTOs
+        const errors=await validate(updateUserDto)
+
+        if(errors.length>0){
+            return res.status(400).json({
+                success:false,
+                message:"validation failed",
+                errors:errors.map(error=>({
+                    property:error.property,
+                    message:error.constraints
+                }))
+            })
+        }
+        try {
+            //calling the service
+        const updatedUser = await this.userSerivce.updateUser(id as string,updateUserDto) 
+        return res.status(200).json({
+            success:true,
+            message:"User Updated Successfully",
+            data:updatedUser
+        })
+        } catch (error) {
+            console.error("Error fetching user",error)
+            return res.status(500).json({
+                success:false,
+                message:'Failed To fetch the user'
+            })
+        }
+        
+
+
     }
 
 }

@@ -1,4 +1,5 @@
 import { AppDataSource } from "../config/data-source";
+import { adminProfile } from "./admin.seed";
 import { seedRoles } from "./role.seed";
 
 async function runSeeds() {
@@ -7,6 +8,7 @@ async function runSeeds() {
         console.log('Database Connected')
 
         await seedRoles()
+        await adminProfile()
         console.log('Seeding Completed')
         process.exit(0)
     } catch (error) {
