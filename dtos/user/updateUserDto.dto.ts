@@ -20,17 +20,17 @@ export class UpdateUserDto {
 
     @IsDateString()
     @IsOptional()
-    date_of_birth?:string
+    date_of_birth?:Date
 
     @IsString()
     @IsOptional()
     address?:string
 
-    @IsString()
-    @IsOptional()
-    profile_picture?:string
+    // @IsString()
+    // @IsOptional()
+    // profile_picture?:string
 
     @IsBoolean()
     @IsOptional()
-    is_Active?:string
+    is_Active?:boolean
 }

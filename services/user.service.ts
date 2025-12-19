@@ -113,7 +113,77 @@ export class UserService {
     }
 
     //function to update a user
-    async updateUser(user_id:string,updateUserDto:UpdateUserDto){
-        
+    async updateUser(user_id:string,updateUserDto:UpdateUserDto):Promise<User | null>{
+        try {
+            //first finding the user
+            const user = await this.userRepository.findOne({
+            where:{user_id}
+        }) 
+        if(!user){
+            throw new Error ('User not Found')
+        }
+        //!--the below is another approach for updating the necessary data only
+        // Object.assign(user,{
+        //     first_name:updateUserDto.first_name
+        // })
+        //updating only the provided fields
+        if(updateUserDto.first_name) user.first_name=updateUserDto.first_name;
+        if(updateUserDto.last_name) user.last_name=updateUserDto.last_name;
+        if(updateUserDto.date_of_birth) user.date_of_birth=updateUserDto.date_of_birth;
+        if(updateUserDto.address) user.address=updateUserDto.address;
+        if(updateUserDto.is_Active !==undefined) user.is_active=updateUserDto.is_Active; 
+
+        //saving the updated data
+        const updatedUser= await this.userRepository.save(user)
+
+
+        delete (updatedUser as any).password
+        return updatedUser;
+
+        } catch (error) {
+        console.error('Error Updating the user')
+        throw new Error('Error handling user update')    
+        }
+    }
+
+    //Delete...function for deactivating the user (soft delete)
+    async deactivateUser (user_id:string):Promise<{message:string}> {
+        try {
+            const exists= await this.userRepository.findOne({
+                where:{user_id}
+            })
+
+            if (!exists){
+                throw new Error('User Not Found')
+            }
+            exists.is_active= false;
+            await this.userRepository.save(exists)
+            return {message:'User deactivated successfully'}
+        } catch (error) {
+            console.error('Error Deleting user')
+            throw new Error('Unable deleting user')
+        }
+    }
+
+    //Delete...function for deactivating the user (soft delete)
+    async deleteUser (user_id:string):Promise<{message:string}>{
+       
+       const result= await this.userRepository.delete(user_id)
+       if(result.affected ===0){
+        throw new Error('User not found')
+       }
+        return {message:"User Deleted Successfully"}
+    }
+
+   //function to get a users based on role
+    async getUsersByRole(role:string):Promise<User[]> {
+        const users=await this.userRepository.find({
+            where:{
+                role:{role_name:role}
+            },
+            relations:['role']
+        })
+        users.forEach(user=>delete (user as any).password)
+        return users;
     }
 }

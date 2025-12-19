@@ -5,9 +5,6 @@ import { UpdateUserDto } from '../dtos/user/updateUserDto.dto'
 import { isInstance, validate } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 
-interface userData{
-        id:string
-    }
 export class UserController {
     
     private userSerivce!: UserService;
@@ -95,6 +92,12 @@ export class UserController {
             })
         } catch (error) {
             console.error("Error fetching user")
+            if(error instanceof Error && error.message.includes('user not found')){
+                return res.status(204).json({
+                    success:true,
+                    message:error.message
+                })
+            }
             return res.status(500).json({
                 success:false,
                 message:"Failed to fetch user"
@@ -104,14 +107,15 @@ export class UserController {
     }
 
     //method to update a user
-    async updateUser(req:Request,res:Response){
+    updateUser= async (req:Request,res:Response)=>{
         const {id}=req.params
+        try {
         //converting plainJSON to DTO class
         const updateUserDto=plainToClass(UpdateUserDto,req.body)
 
+
         //validating the DTOs
         const errors=await validate(updateUserDto)
-
         if(errors.length>0){
             return res.status(400).json({
                 success:false,
@@ -122,19 +126,21 @@ export class UserController {
                 }))
             })
         }
-        try {
             //calling the service
         const updatedUser = await this.userSerivce.updateUser(id as string,updateUserDto) 
+
         return res.status(200).json({
             success:true,
             message:"User Updated Successfully",
             data:updatedUser
         })
+        
+
         } catch (error) {
-            console.error("Error fetching user",error)
+            console.error("Error updating user",error)
             return res.status(500).json({
                 success:false,
-                message:'Failed To fetch the user'
+                message:'Failed To update the user'
             })
         }
         
@@ -142,4 +148,61 @@ export class UserController {
 
     }
 
+    //method to delete (soft user) a user
+    softDeleteUser= async (req:Request,res:Response) =>{
+        const {id}=req.params
+        try {
+            //calling the service
+            const deletedUser= await this.userSerivce.deactivateUser(id as string)
+            return res.status(204).json({
+                success:true,
+                message:"User Deleted Successfully"
+            })
+        } catch (error) {
+            console.error("Error Deleting a user")
+            return res.status(500).json({
+                success:false,
+                message:'Unable deleting a user'
+            })
+        }
+    }
+
+    //method to delete (hard delete) a user
+    hardDeleteUser = async (req:Request,res:Response)=>{
+        const {id}= req.params
+        try {
+            //calling the service
+            const user=await this.userSerivce.deleteUser(id as string)
+            return res.status(204).json({
+                successs:true,
+                message:user.message
+            })
+        } catch (error) {
+            console.error("Error Permanently Deleting the user")
+            return res.status(500).json({
+                success:false,
+                message:"Unable to delete the user"
+            })
+        }
+    }
+
+    //method to get the users based on their role
+    getUsersByRole= async (req:Request,res:Response)=>{
+        const {role}=req.params
+        try {
+            //calling the service
+            const usersByRole=await this.userSerivce.getUsersByRole(role as string)
+            return res.status(200).json({
+                success:true,
+                message:"Users Fetched Successfully",
+                data:usersByRole
+            })
+        } catch (error) {
+            console.error("Error Fetching users based on role")
+            return res.status(500).json({
+                success:false,
+                message:"Unable to Get Users Based on roles"
+            })
+        }
+    }
 }
