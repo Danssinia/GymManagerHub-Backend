@@ -6,7 +6,8 @@ export async function seedRoles() {
 
     const roles = [
         { role_name: 'Admin' },
-        { role_name: 'Staff' },
+        { role_name: 'Trainer' },
+        { role_name: 'Receptionist' },
         { role_name: 'Member' }
     ]
 

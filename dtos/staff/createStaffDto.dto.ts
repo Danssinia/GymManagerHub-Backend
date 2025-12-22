@@ -6,16 +6,14 @@ import {
     IsUUID,
     MinLength,
     IsNumber,
-    IsEmail
+    IsEmail,
+    IsArray
 } from "class-validator";
 
 
 
 export class CreateStaffDto {
-    //the user_id might be commented (i will check it)
-    @IsUUID()
-    @IsString()
-    user_id!:string
+    //User Data
 
     @IsString()
     @MinLength(3)
@@ -26,10 +24,10 @@ export class CreateStaffDto {
     last_name!:string
 
     @IsEmail()
-    @IsString()
     email!:string
 
     @IsString()
+    @MinLength(3)
     username!:string
 
     @IsString()
@@ -37,7 +35,6 @@ export class CreateStaffDto {
     password!:string
 
     @IsString()
-    @MinLength(10)
     @IsOptional()
     phone?:string
 
@@ -49,31 +46,33 @@ export class CreateStaffDto {
     @IsOptional()
     address?:string
 
-    @IsUUID()
-    @IsString()
-    role_id!:string
+    // @IsUUID()
+    // @IsString()
+    // role_id!:string
 
-
-
-    //here below the need to be checked from the staff table
-    @IsUUID()
-    @IsString()
-    staff_id!:string
+    //Staff Data
 
     // @IsUUID()
     // @IsString()
     // user_id!:string
 
     @IsDateString()
-    hire_date!:string
+    hire_date!:Date
 
-    @IsEnum(['full_time','part_time','contract'])
+    @IsNumber()
+    salary!:number
+
+    @IsEnum(['full-time','part-time','contract'])
     @IsString()
     employment_status!:string
 
     @IsNumber()
     experience!:number
 
-    @IsString()
+    @IsString({each:true})
+    @IsArray()
     specialization!:string
+
+    
+
 }

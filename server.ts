@@ -1,6 +1,7 @@
 import "reflect-metadata"
 import express, { Response, Request } from "express";
 import userRoutes from './routes/user.routes'
+import staffRoutes from './routes/staff.routes'
 import cookieParser from "cookie-parser"
 import { AppDataSource } from "./config/data-source";
 
@@ -13,7 +14,7 @@ app.use(cookieParser())
 
 //Routes
 app.use('/api/v1/users', userRoutes)
-
+app.use('/api/v1/staffs', staffRoutes)
 
 const PORT = 3000;
 AppDataSource.initialize()
