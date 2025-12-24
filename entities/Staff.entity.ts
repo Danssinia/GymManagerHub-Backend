@@ -38,12 +38,12 @@ export class Staff {
     employment_status!: string
 
     @Column({ type: 'int', nullable: true })
-    experience!: number
+    experience?: number
 
 
     //this is trainer specific field...i might add another additional fileds later
     @Column({ type: 'simple-array', nullable: true })
-    specialization!: string
+    specialization?: string
 
     @CreateDateColumn()
     createdAt!: Date

@@ -67,11 +67,13 @@ export class CreateStaffDto {
     employment_status!:string
 
     @IsNumber()
-    experience!:number
+    @IsOptional()
+    experience?:number
 
     @IsString({each:true})
     @IsArray()
-    specialization!:string
+    @IsOptional()
+    specialization?:string
 
     
 

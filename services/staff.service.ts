@@ -75,8 +75,9 @@ export class StaffService {
             salary:createStaffDto.salary,
             employment_status:createStaffDto.employment_status || 'full-time',
             //trainer-specific fields
-            experience:createStaffDto.experience ??"",
+            experience:createStaffDto.experience || 0,
             specialization:createStaffDto.specialization ??""
+            // specialization: createStaffDto.specialization ? createStaffDto.specialization.join(',') : ""
         })
         const savedstaff= await queryRunner.manager.save(staff)
 
@@ -85,7 +86,7 @@ export class StaffService {
 
         //fetching the userWithRole
 
-        const completeStaff = this.staffRepo.findOne({
+        const completeStaff =await this.staffRepo.findOne({
             where:{staff_id:savedstaff.staff_id},
             relations:['user', 'user.role']
         })
@@ -98,5 +99,19 @@ export class StaffService {
      } finally {
         await queryRunner.release()
      }
+    }
+
+    //method to get all the registered staffs (both trainer and receptionists)
+    async getAllStaff (roleName?: 'Trainer' | 'Receptionist'){
+// Check staff with users
+  const allStaff = await this.staffRepo.find({
+    relations: ['user', 'user.role']
+  });
+
+            // //creating the querybuilder
+            // const staff = await this.staffRepo.find()
+            //getting the data
+            // const staff = await queryBuilder.getMany()
+            return allStaff;   
     }
 }
