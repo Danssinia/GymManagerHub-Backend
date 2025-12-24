@@ -15,9 +15,33 @@ router.post(
 )
 
 //route to get all staffs
+//?? this is not working you have to see it again
 router.get(
     '/allStaffs',
     staffController.getAllStaff
 )
 
+//route to get staff by user id
+router.get(
+    '/user/:userId',
+    staffController.getStaffByUserId
+)
+
+//router to get staff by staff_id
+router.get(
+    '/:id',
+    staffController.getStaffById
+)
+
+//route to get All Trainers
+router.get(
+    '/users/trainers',
+    staffController.getAllTrainers
+)
+
+//route to get All Receptionists
+router.get(
+    '/users/receptionists',
+    staffController.getAllReceptionists
+)
 export default router

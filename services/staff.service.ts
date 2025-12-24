@@ -102,16 +102,73 @@ export class StaffService {
     }
 
     //method to get all the registered staffs (both trainer and receptionists)
-    async getAllStaff (roleName?: 'Trainer' | 'Receptionist'){
-// Check staff with users
-  const allStaff = await this.staffRepo.find({
-    relations: ['user', 'user.role']
-  });
+    async getAllStaff (roleName?:'Trainer' | 'Receptionist'):Promise<Staff[]>{
+        const queryBuilder = await this.staffRepo
+        .createQueryBuilder('staff')
+        .leftJoinAndSelect('staff.user','user')
+        .leftJoinAndSelect('user.role', 'role')
+        .orderBy('staff.hire_date','DESC')
 
-            // //creating the querybuilder
-            // const staff = await this.staffRepo.find()
-            //getting the data
-            // const staff = await queryBuilder.getMany()
-            return allStaff;   
+        //filter by role
+        if(roleName){
+            //add conditions for specific role
+            queryBuilder.where('role.role_name=:roleName',{roleName})
+        }else {
+            //fetch all staffs except admin
+            queryBuilder.where('role.role_name IN (:...roles)',{
+                roles:['Trainer','Receptionist']
+            })
+        }
+        const allStaffs = await queryBuilder.getMany()
+        
+        if(allStaffs.length===0){
+            throw new Error("Staff member not found")
+        }
+        // Remove passwords
+    allStaffs.forEach(s => {
+      if (s.user) delete (s.user as any).password;
+    });
+        return allStaffs
+}
+    //metho to get all trainers
+    async getAllTrainers () {
+        return this.getAllStaff('Trainer')
     }
+
+    //methof to get all receptionists
+    async getAllReceptionists () {
+        return this.getAllStaff('Receptionist')
+    } 
+
+    //method to get single user by using userId
+
+    async getStaffByUserId (user_id:string):Promise<Staff>{
+        const staff= await this.staffRepo.findOne({
+            where:{user_id},
+            relations:['user','user.role']
+        })
+
+        if(!staff){
+            throw new Error ("Staff member not found")
+        }
+        delete (staff as any).password
+        return staff
+    }
+
+    //method to get single user by using staffId
+
+    async getStaffById (staff_id:string):Promise<Staff> {
+        const staff = await this.staffRepo.findOne({
+            where:{staff_id},
+            relations:['user','user.role','members_created','assigned_members']
+        })
+        
+        if(!staff){
+            throw new Error('staff member not found')
+        }
+
+        delete (staff as any).password
+        return staff
+    }
+
 }

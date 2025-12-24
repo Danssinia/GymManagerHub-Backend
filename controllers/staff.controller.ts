@@ -117,21 +117,133 @@ export class StaffController {
     getAllStaff = async (req:Request,res:Response)=>{
        try {
          //calling the service
-        const staff = this.staffService.getAllStaff()
+        const staff =await this.staffService.getAllStaff()
         return res.status(200).json({
             success:true,
             message:"Staffs Fetched Successfully",
             data:staff
         })
+        
        } catch (error) {
         console.error("Error getting the staffs",error)
+
+        if(error instanceof Error && error.message.includes('staff member not found')){
+            return res.status(404).json({
+                success:false,
+                message:error.message
+            })
+        }
         return res.status(500).json({
             success:false,
             message:"Failed to fetch staff",
             error:error instanceof Error &&error.message
         })
        }
+    }
 
+    //function to get all Trainers
+    getAllTrainers = async (req:Request,res:Response)=>{
+        try {
+            const trainers = await this.staffService.getAllTrainers()
 
+            return res.status(200).json({
+                success:true,
+                message:"Trainers fetched successfully",
+                data:trainers
+            })
+        } catch (error) {
+            console.error("Error Fetching staff",error)
+            if(error instanceof Error && error.message.includes("Staff member not found")){
+                return res.status(404).json({
+                    success:false,
+                    message:error.message
+                })
+            }
+
+            return res.status(500).json({
+                success:false,
+                message:error instanceof Error && error.message
+            })
+        }
+    }
+
+    //function to get All Receptionists
+    getAllReceptionists = async (req:Request,res:Response) => {
+        try {
+            const receptionists =  await this.staffService.getAllReceptionists()
+            return res.status(200).json({
+                success:true,
+                message:"Receptionists fetched successfuly",
+                data:receptionists
+            })
+        } catch (error) {
+            console.error("Error fetching receptionists",error)
+            if(error instanceof Error && error.message.includes("Staff member not found")){
+                return res.status(404).json({
+                    success:false,
+                    message:error.message
+                })
+            }
+            
+            return res.status(500).json({
+                success:false,
+                message:error instanceof Error && error.message
+            })
+        } 
+    }
+
+    //function to getStaffByUserId
+    getStaffByUserId= async (req:Request,res:Response) => {
+        const {id} = req.params
+        try {
+            //callign the service
+            const user = await this.staffService.getStaffByUserId(id as string)
+            return res.status(200).json({
+                success:true,
+                message:"User fetched successfully",
+                data:user
+            })
+        } catch (error) {
+            console.error("Error getting the staff",error)
+            if(error instanceof Error && error.message.includes("Staff member not found")){
+                return res.status(404).json({
+                    success: false,
+                    message:error.message
+                })
+            }
+            return res.status(500).json({
+                success:false,
+                message:'Failed to fetch staff'
+            })
+        }
+    }
+
+    //function to get staff by staffId
+
+    getStaffById = async (req:Request,res:Response) => {
+        const {id} = req.params;
+        try {
+            //calling  the service here
+            const staff = await this.staffService.getStaffById(id as string)
+            return res.status(200).json({
+                success:true,
+                message:"Staff Fetched Successfully",
+                data:staff
+            })
+        } catch (error) {
+            console.error("Error getting the staff",error)
+
+            if(error instanceof Error && error.message.includes('staff member not found')){
+                return res.status(404).json({
+                    success:false,
+                    message:error.message
+                })
+            }
+
+            return res.status(500).json({
+                success:false,
+                message:"Unable to fetch the staff"
+            })
+        }
     }
 }
