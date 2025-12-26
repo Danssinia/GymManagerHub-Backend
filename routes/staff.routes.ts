@@ -44,4 +44,26 @@ router.get(
     '/users/receptionists',
     staffController.getAllReceptionists
 )
+
+
+//patch routes
+//route ro update staff details
+router.patch(
+    '/update-staff/:id',
+    staffController.updateStaff
+)
+
+//route to deactivate the staff (soft delete)
+router.patch(
+    '/deactivate-staff/:id',
+    staffController.deactivateStaff
+)
+
+//delete routes
+//route to delete the staff (hard delete)
+router.get(
+    '/delete-staff',
+    staffController.deleteStaff
+)
+
 export default router

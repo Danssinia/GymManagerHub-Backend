@@ -13,19 +13,19 @@ export class UpdateStaffDto {
     //User Data
     @IsString()
     @IsOptional()
-    firstname?:string
+    first_name?:string
 
     @IsString()
     @IsOptional()
-    lastname?:string
+    last_name?:string
 
-    @IsNumber()
+    
     @IsOptional()
-    phone?:number
+    phone?:string
 
     @IsDateString()
     @IsOptional()
-    date_of_birth?:number
+    date_of_birth?:Date
 
     @IsString()
     @IsOptional()

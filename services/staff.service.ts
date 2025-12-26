@@ -3,7 +3,7 @@ import { User } from "../entities/User.entity";
 import { Staff } from "../entities/Staff.entity";
 import { Role } from "../entities/Role.entity";
 import { CreateStaffDto } from "../dtos/staff/createStaffDto.dto";
-import { UpdateStaffDto } from "../dtos/staff/updateStaffFto.dto";
+import { UpdateStaffDto } from "../dtos/staff/updateStaffDto.dto";
 import bcrypt from 'bcrypt'
 
 export class StaffService {
@@ -171,4 +171,81 @@ export class StaffService {
         return staff
     }
 
+    //method to update staff details
+
+    async updateStaff (staff_id:string,updateStaffDto:UpdateStaffDto) {
+        const queryRunner = AppDataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
+
+       try {
+         const staff = await this.staffRepo.findOne({
+            where:{staff_id},
+            relations:['user']
+        })
+
+        if(!staff){
+            throw new Error ("staff member not found")
+        }
+
+        //updating the user fields
+        const user = staff.user;
+        if(updateStaffDto.first_name) user.first_name = updateStaffDto.first_name
+        if(updateStaffDto.last_name) user.last_name = updateStaffDto.last_name
+        if(updateStaffDto.phone) user.phone = updateStaffDto.phone
+        if(updateStaffDto.date_of_birth) user.date_of_birth = updateStaffDto.date_of_birth
+        if(updateStaffDto.address) user.address = updateStaffDto.address
+        //saving the the updated data
+        await queryRunner.manager.save(user)
+
+        //update staff data details
+        if(updateStaffDto.hire_date) staff.hire_date = updateStaffDto.hire_date
+        if(updateStaffDto.salary) staff.salary= updateStaffDto.salary
+        if(updateStaffDto.employment_status) staff.employment_status = updateStaffDto.employment_status
+        //trainer specific data
+        if(updateStaffDto.experience) staff.experience = updateStaffDto.experience
+        if(updateStaffDto.specialization) staff.specialization = updateStaffDto.specialization
+        //saving the updated staff data
+
+        await queryRunner.manager.save(staff)
+
+        //commit transaction
+        await queryRunner.commitTransaction()
+
+        //fetch the updated staff with Relations
+        const updatedStaff = await this.staffRepo.findOne({
+            where:{staff_id},
+            relations:['user','user.role']
+        })
+
+        if (updatedStaff?.user) {
+            delete (updatedStaff.user as any).password
+        }
+
+        return updatedStaff
+       } catch (error) {
+        await queryRunner.rollbackTransaction()
+        throw error
+       } finally {
+        await queryRunner.release()
+       }
+    }
+
+    //method to deactivate a Staff
+
+    async deactivateStaff (staff_id:string) {
+         const staff = await this.staffRepo.findOne({
+            where:{staff_id},
+            relations:['user']
+         })
+
+         if(!staff){
+            throw new Error ("staff member not found")
+         }
+         //deactivating the user (soft delete)
+         staff.user.is_active=false
+         await this.userRepo.save(staff.user)
+
+         return {message:"Staff memeber deactivated successfully"}
+    }
 }
