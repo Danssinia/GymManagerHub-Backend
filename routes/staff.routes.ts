@@ -61,8 +61,8 @@ router.patch(
 
 //delete routes
 //route to delete the staff (hard delete)
-router.get(
-    '/delete-staff',
+router.delete(
+    '/delete-staff/:id',
     staffController.deleteStaff
 )
 

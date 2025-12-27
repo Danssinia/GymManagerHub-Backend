@@ -1,20 +1,15 @@
-import { 
+import {
+    IsEmail,
     IsOptional,
     IsString,
-    IsDateString,
     IsEnum,
     IsUUID,
     MinLength,
-    IsNumber,
-    IsEmail,
-    IsArray
-} from "class-validator";
+    IsDateString
+} from 'class-validator'
 
-
-
-export class CreateStaffDto {
-    //User Data
-
+export class CreateMemberDto {
+    //dto for the user data
     @IsString()
     @MinLength(3)
     first_name!:string
@@ -46,31 +41,26 @@ export class CreateStaffDto {
     @IsOptional()
     address?:string
 
-
-
-    //Staff Data
-
-
+    //dto for the member data
+    // @IsString()
+    @IsEnum(['basic','premium','platinium'])
+    membership_plan!:string
 
     @IsDateString()
-    hire_date!:Date
+    join_date!:Date
 
-    @IsNumber()
-    salary!:number
+    @IsDateString()
+    membership_expiry!:Date
 
-    @IsEnum(['full-time','part-time','contract'])
+    @IsEnum(['pending','paid','cancelled'])
+    payment_status!:string
+
     @IsString()
-    employment_status!:string
+    health_info!:string
 
-    @IsNumber()
+    //trainer assignment
+    @IsUUID()
     @IsOptional()
-    experience?:number
-
-    @IsString({each:true})
-    @IsArray()
-    @IsOptional()
-    specialization?:string
-
-    
+    assigned_trainer_id?:string
 
 }

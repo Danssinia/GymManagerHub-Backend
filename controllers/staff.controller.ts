@@ -315,6 +315,29 @@ export class StaffController {
         }
     }
     deleteStaff = async (req:Request,res:Response) => {
-        console.log("controller")
+        const {id} = req.params
+        try {
+            //calling the service
+            const deletedStaff = await this.staffService.deleteStaff(id as string)
+            return res.status(200).json({
+                success:true,
+                message:deletedStaff.message
+            })
+        } catch (error) {
+            console.error("Error deleting the staff")
+            
+            if(error instanceof Error && error.message.includes("staff member not found")){
+                return res.status(404).json({
+                    success:false,
+                    message:error.message
+                })
+            }
+
+            //generic error
+            return res.status(500).json({
+                success:false,
+                message:"Unable deleting the staff"
+            })
+        }
     }
 }

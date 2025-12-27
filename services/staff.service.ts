@@ -248,4 +248,21 @@ export class StaffService {
 
          return {message:"Staff memeber deactivated successfully"}
     }
+
+    //method to delete a staff (hard delete) - permanent delete
+
+    async deleteStaff (staff_id:string) {
+        //cheking user existence
+        const staff= await this.staffRepo.findOne({
+            where:{staff_id},
+            relations:['user']
+        })
+        if(!staff){
+            throw new Error ('staff member not found')
+        }
+
+        await this.userRepo.delete(staff.user.user_id)
+        
+        return {message:"Staff deleted successfully"}
+    }
 }
