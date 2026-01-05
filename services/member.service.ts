@@ -9,6 +9,6 @@ import bcrypt from 'bcrypt'
 export class MemberService {
     //method to create a member
 async createMember ():Promise<{message:string}> {
-       return {message:"service ga dersoal"}
+       return {message:"this message is from the service part"}
     }
 }
